@@ -42,9 +42,9 @@
 			"default": "./dist/address.js"
 		},
 		"./call": {
-			"types": "./dist/call.d.ts",
-			"import": "./dist/esm/call.js",
-			"default": "./dist/call.js"
+			"types": "./dist/call/index.d.ts",
+			"import": "./dist/esm/call/index.js",
+			"default": "./dist/call/index.js"
 		},
 		"./client": {
 			"types": "./dist/client/index.d.ts",
