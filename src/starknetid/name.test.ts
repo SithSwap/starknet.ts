@@ -52,7 +52,7 @@ describe.concurrent('StarknetID', () => {
 		]);
 	});
 
-	it.only('gets id from domains', async () => {
+	it('gets id from domains', async () => {
 		const domains = ['gold.stark', 'hello.stark', 'go.stark', 'world.stark', 'good.stark'];
 		console.log(decode([344283362n]), encode('solene'));
 		const ids = await id(client, domains);

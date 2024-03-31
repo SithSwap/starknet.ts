@@ -12,7 +12,7 @@ describe('Profile', () => {
 		console.log(addresses);
 	});
 
-	it.only('gets uri', async () => {
+	it('gets uri', async () => {
 		const nfts = [
 			{
 				contract: '0x03ab1124ef9ec3a2f2b1d9838f9066f9a894483d40b33390dda8d85c01a315a3',
