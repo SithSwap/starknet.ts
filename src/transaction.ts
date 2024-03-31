@@ -75,7 +75,6 @@ export async function wait(provider: ProviderInterface, hash: HexString, options
 	while (attempt--) {
 		try {
 			const receipt = await provider.getTransactionReceipt(hash);
-			console.log(receipt);
 			if (!receipt.status) continue;
 			if (pass.includes(receipt.status)) return receipt;
 			if (reject.includes(receipt.status)) throw new Rejected(receipt.status);

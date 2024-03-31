@@ -1,17 +1,13 @@
-import { RpcProvider } from 'starknet';
-
-import CONTRACTS from '$tests/constants/contracts.js';
-import RPCs from '$tests/constants/rpc.js';
-
-import { ChainID } from '$src/network/network.js';
-import { Multicall } from '$src/client/index.js';
+import { ChainID } from '$src/network/index.js';
+import { MulticallContracts } from '$src/call/index.js';
 
 import { hash } from './contract.js';
+import { getReader } from '$tests/utilities/starknet.js';
 
 describe('Contract Hash', () => {
+	const provider = getReader(ChainID.Goerli).provider;
 	it('fetch contract hash', async () => {
-		const provider = new RpcProvider({ nodeUrl: RPCs[ChainID.Goerli] });
-		const value = await hash(provider, CONTRACTS[ChainID.Goerli][Multicall]);
+		const value = await hash(provider, MulticallContracts[ChainID.Goerli]);
 
 		expect(value).toBeDefined();
 		expect(value?.startsWith('0x')).toBe(true);

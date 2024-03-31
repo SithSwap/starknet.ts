@@ -1,20 +1,11 @@
-import { Multicall } from '$src/client/index.js';
 import { ChainID } from '$src/network/index.js';
 
-import CONTRACTS from '$tests/constants/contracts.js';
 import { getReader } from '$tests/utilities/starknet.js';
-import { Deployment as StarknetID } from './index.js';
+import { decode, encode } from './index.js';
 
-import { from, to } from './name.js';
-
-const Deployment = {
-	[ChainID.Goerli]: {
-		...StarknetID[ChainID.Goerli],
-		[Multicall]: CONTRACTS[ChainID.Goerli][Multicall]
-	}
-};
+import { from, to, id } from './name.js';
 describe.concurrent('StarknetID', () => {
-	const client = getReader(ChainID.Goerli, Deployment[ChainID.Goerli]);
+	const client = getReader(ChainID.Goerli);
 	it.each([
 		[0n, ''],
 		['0x43812817b20b2e237017b4197f83b3bf196dc4e075f02804b6e9d2d46f7c4ae', ''],
@@ -59,5 +50,13 @@ describe.concurrent('StarknetID', () => {
 			'0x5ff6e65cc6e154eeab8c80f43784a2ca6a95f7f2de51b30f9d5b90189b226f4',
 			'0xb89cc5516af1e5389c6424cf712dbec33e058e936215e907a2fa30a46b14c3'
 		]);
+	});
+
+	it.only('gets id from domains', async () => {
+		const domains = ['gold.stark', 'hello.stark', 'go.stark', 'world.stark', 'good.stark'];
+		console.log(decode([344283362n]), encode('solene'));
+		const ids = await id(client, domains);
+
+		console.log(ids);
 	});
 });

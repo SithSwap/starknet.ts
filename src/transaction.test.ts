@@ -1,10 +1,11 @@
 import type { HexString } from '$src/types.js';
 
-import { RpcProvider, GetTransactionReceiptResponse, ProviderInterface } from 'starknet';
+import { GetTransactionReceiptResponse } from 'starknet';
+
+import { ChainID } from '$src/network/index.js';
 import { advance } from '$tests/utilities/time.js';
-import RPCs from '$tests/constants/rpc.js';
 import { wait, Rejected, Timeout, Status } from './transaction.js';
-import { ChainID } from '$src/network/network.js';
+import { getReader } from '$tests/utilities/starknet.js';
 
 function generateReceipt(hash: HexString, status?: Status) {
 	return {
@@ -39,10 +40,10 @@ describe('transaction', () => {
 	afterEach(() => {
 		vi.restoreAllMocks();
 	});
-
+	const provider = getReader(ChainID.Goerli).provider;
 	it('should wait for a transaction', async () => {
 		const runs = 3;
-		const provider = new RpcProvider({ nodeUrl: RPCs[ChainID.Goerli] }) as ProviderInterface;
+
 		const mock = vi
 			.spyOn(provider, 'getTransactionReceipt')
 			.mockImplementation(async hash =>
@@ -62,7 +63,7 @@ describe('transaction', () => {
 
 	it('should reject a transaction', async () => {
 		const runs = 3;
-		const provider = new RpcProvider({ nodeUrl: RPCs[ChainID.Goerli] }) as ProviderInterface;
+
 		const mock = vi
 			.spyOn(provider, 'getTransactionReceipt')
 			.mockImplementation(async hash =>
@@ -85,7 +86,7 @@ describe('transaction', () => {
 
 	it('should timesout', async () => {
 		const runs = 5;
-		const provider = new RpcProvider({ nodeUrl: RPCs[ChainID.Goerli] }) as ProviderInterface;
+
 		const mock = vi
 			.spyOn(provider, 'getTransactionReceipt')
 			.mockImplementation(async hash => generateReceipt(hash as HexString, undefined));

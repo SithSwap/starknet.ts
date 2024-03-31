@@ -8,9 +8,7 @@ import { toFelt } from '$src/index.js';
 import { decode, encode } from './codec.js';
 import { StarknetID } from './deployment.js';
 
-type Client = Reader<ChainID, Deployment>;
-
-export async function to(client: Client, addresses: BigIntish[]) {
+export async function to(client: Reader<ChainID, Deployment>, addresses: BigIntish[]) {
 	const contract = client.lookup[StarknetID].name;
 	if (!contract) throw new Error('Starknet ID contract not found');
 
@@ -48,7 +46,7 @@ export async function to(client: Client, addresses: BigIntish[]) {
 	}
 }
 
-export async function from(client: Client, domains: string[]) {
+export async function from(client: Reader<ChainID, Deployment>, domains: string[]) {
 	const contract = client.lookup[StarknetID].name;
 	if (!contract) throw new Error('Starknet ID contract not found');
 
@@ -73,5 +71,34 @@ export async function from(client: Client, domains: string[]) {
 		return addresses;
 	} catch (e) {
 		throw Error('Could not get address from stark name');
+	}
+}
+
+export async function id(client: Reader<ChainID, Deployment>, domains: string[]) {
+	const contract = client.lookup[StarknetID].name;
+	if (!contract) throw new Error('Starknet ID contract not found');
+
+	try {
+		const calls = Array(domains.length);
+		for (let i = 0; i < domains.length; i++) {
+			calls[i] = {
+				to: contract,
+				method: 'domain_to_id',
+				data: ['1', toFelt(encode(domains[i].replace('.stark', '')))]
+			};
+		}
+
+		const { result } = await client.multicall(calls);
+		if (!result) throw Error('Could not get ids for provided domains');
+
+		const id = new Array<string>(domains.length);
+		for (let i = 2, j = 0; j < domains.length; i += 2, j += 1) {
+			id[j] = result[i + 1];
+		}
+
+		return id;
+	} catch (e) {
+		console.log(e);
+		throw Error('Could not get ids for provided domains');
 	}
 }

@@ -1,8 +1,8 @@
 import type { Call as StarknetCall, Account, ProviderInterface } from 'starknet';
 import type { Arrayable, BigIntish, HexString, Not } from '$src/types.js';
 
-import { toFelt } from './codec.js';
-import { selectorFor } from './hash.js';
+import { toFelt } from '../codec.js';
+import { selectorFor } from '../hash.js';
 
 export type BigNumberish = Not<BigIntish, boolean | bigint>; // placeholder type
 
@@ -76,22 +76,6 @@ export function toExecuteCalldata(calls: Call[], nonce?: BigIntish) {
 
 export function call(provider: ProviderInterface, call: Call, block?: Block) {
 	return provider.callContract(remap(call), block);
-}
-
-export function multicall(
-	provider: ProviderInterface,
-	contract: HexString,
-	calls: Call[],
-	block?: Block
-) {
-	return provider.callContract(
-		{
-			entrypoint: 'aggregate',
-			contractAddress: contract,
-			calldata: toExecuteCalldata(calls)
-		},
-		block
-	);
 }
 
 export async function estimate(

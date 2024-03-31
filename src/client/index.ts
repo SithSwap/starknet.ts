@@ -3,7 +3,8 @@ import type { Arrayable, Bound, HexString } from '$src/types.js';
 import type { Connection } from '$src/wallet/common.js';
 import type { ChainID } from '$src/network/network.js';
 
-import { call, estimate, execute, multicall } from '$src/call.js';
+import { call, estimate, execute } from '$src/call/index.js';
+import { multicall, Multicall, MulticallDeployment } from '$src/call/index.js';
 
 export type Lookup<C extends ChainID = ChainID, D extends Deployment = Deployment> = {
 	chain: C;
@@ -37,11 +38,9 @@ export type Deployment<K extends Keys = Keys> = {
 		| ReadonlyArray<HexString>;
 };
 
-export const Multicall = Symbol('Multicall');
-
 export function reader<Chain extends ChainID = ChainID, const D extends Deployment = Deployment>(
 	connection: Required<Pick<Connection<Chain>, 'chain' | 'provider'>>,
-	deployment: D & { [Multicall]: HexString }
+	deployment: D & MulticallDeployment
 ): Reader<Chain, D> {
 	return {
 		chain: connection.chain,
