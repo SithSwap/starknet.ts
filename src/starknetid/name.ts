@@ -18,12 +18,11 @@ export async function to(client: Reader<ChainID, Deployment>, addresses: BigInti
 			calls[i] = {
 				to: contract,
 				method: 'address_to_domain',
-				data: [toFelt(addresses[i])]
+				data: [toFelt(addresses[i]), '1', '0']
 			};
 		}
 
 		const { result } = await client.multicall(calls);
-
 		if (!result) throw Error('Could not get stark name');
 
 		const domains = new Array<string>(addresses.length);
@@ -42,6 +41,7 @@ export async function to(client: Reader<ChainID, Deployment>, addresses: BigInti
 		}
 		return domains;
 	} catch (e) {
+		console.log(e)
 		throw Error('Could not get stark name');
 	}
 }
